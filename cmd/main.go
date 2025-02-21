@@ -45,7 +45,7 @@ func main() {
 	}
 
 	baseServer := grpc.NewServer()
-	pb.RegisterBussinessServer(baseServer, grpcServer)
+	pb.RegisterBusinessServer(baseServer, grpcServer)
 
 	reflection.Register(baseServer)
 

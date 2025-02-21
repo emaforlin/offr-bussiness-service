@@ -13,7 +13,7 @@ import (
 )
 
 type gRPCServer struct {
-	pb.UnimplementedBussinessServer
+	pb.UnimplementedBusinessServer
 	createBusiness gt.Handler
 }
 
@@ -43,7 +43,7 @@ func encodeCreateBusinessResp(_ context.Context, response interface{}) (interfac
 	}, nil
 }
 
-func NewGRPCServer(endpoints endpoints.Endpoints, logger *zap.Logger) pb.BussinessServer {
+func NewGRPCServer(endpoints endpoints.Endpoints, logger *zap.Logger) pb.BusinessServer {
 	return &gRPCServer{
 		createBusiness: gt.NewServer(
 			endpoints.CreateBusiness,
