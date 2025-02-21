@@ -30,6 +30,7 @@ func (s *service) CreateBusiness(ctx context.Context, business entities.CreateBu
 			return nil, errors.New("already exists a business with that address")
 		}
 	}
+	s.logger.Debug("Business created")
 	return dbBusiness, nil
 }
 
