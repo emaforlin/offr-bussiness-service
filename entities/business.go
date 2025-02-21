@@ -8,3 +8,9 @@ type Business struct {
 	Address string  `gorm:"not null;unique"`
 	Staff   []Staff `gorm:"many2many:business_staff"`
 }
+
+type CreateBusinessDto struct {
+	Name    string
+	Address string
+	Staff   []Staff
+}

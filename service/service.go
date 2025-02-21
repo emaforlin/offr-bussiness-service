@@ -11,7 +11,7 @@ import (
 )
 
 type Service interface {
-	CreateBusiness(ctx context.Context, data entities.Business) (*entities.Business, error)
+	CreateBusiness(ctx context.Context, data entities.CreateBusinessDto) (*entities.Business, error)
 }
 
 type service struct {
@@ -19,13 +19,18 @@ type service struct {
 	db     repository.GMDatabase
 }
 
-func (s *service) CreateBusiness(ctx context.Context, business entities.Business) (*entities.Business, error) {
-	if err := s.db.Cursor().Create(&business).Error; err != nil {
+func (s *service) CreateBusiness(ctx context.Context, business entities.CreateBusinessDto) (*entities.Business, error) {
+	var dbBusiness = &entities.Business{
+		Name:    business.Name,
+		Address: business.Address,
+		Staff:   business.Staff,
+	}
+	if err := s.db.Cursor().Create(dbBusiness).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			return nil, errors.New("already exists a business with that address")
 		}
 	}
-	return &business, nil
+	return dbBusiness, nil
 }
 
 func NewService(logger *zap.Logger, db repository.GMDatabase) Service {

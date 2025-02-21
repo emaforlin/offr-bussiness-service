@@ -20,7 +20,7 @@ func MakeEndpoints(s service.Service) Endpoints {
 
 func makeCreateBusinessEndpoint(s service.Service) gkendpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		req := request.(entities.Business)
+		req := request.(entities.CreateBusinessDto)
 
 		res, err := s.CreateBusiness(ctx, req)
 		if err != nil {

@@ -27,9 +27,15 @@ func (s *gRPCServer) CreateNewBusiness(ctx context.Context, req *pb.CreateBusine
 
 func decodeCreateBusinessReq(_ context.Context, request interface{}) (interface{}, error) {
 	req := request.(*pb.CreateBusinessRequest)
-	return entities.Business{
+
+	staff := make([]entities.Staff, 1)
+	staff[0] = entities.Staff{
+		Auth0ID: req.GetBusinessManager(),
+	}
+	return entities.CreateBusinessDto{
 		Name:    req.GetName(),
 		Address: req.GetAddress(),
+		Staff:   staff,
 	}, nil
 }
 
