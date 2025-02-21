@@ -19,101 +19,101 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Bussiness_CreateNewBusiness_FullMethodName = "/business.v1.Bussiness/CreateNewBusiness"
+	Business_CreateNewBusiness_FullMethodName = "/business.v1.Business/CreateNewBusiness"
 )
 
-// BussinessClient is the client API for Bussiness service.
+// BusinessClient is the client API for Business service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type BussinessClient interface {
+type BusinessClient interface {
 	CreateNewBusiness(ctx context.Context, in *CreateBusinessRequest, opts ...grpc.CallOption) (*CreateBusinessResponse, error)
 }
 
-type bussinessClient struct {
+type businessClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewBussinessClient(cc grpc.ClientConnInterface) BussinessClient {
-	return &bussinessClient{cc}
+func NewBusinessClient(cc grpc.ClientConnInterface) BusinessClient {
+	return &businessClient{cc}
 }
 
-func (c *bussinessClient) CreateNewBusiness(ctx context.Context, in *CreateBusinessRequest, opts ...grpc.CallOption) (*CreateBusinessResponse, error) {
+func (c *businessClient) CreateNewBusiness(ctx context.Context, in *CreateBusinessRequest, opts ...grpc.CallOption) (*CreateBusinessResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateBusinessResponse)
-	err := c.cc.Invoke(ctx, Bussiness_CreateNewBusiness_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Business_CreateNewBusiness_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// BussinessServer is the server API for Bussiness service.
-// All implementations must embed UnimplementedBussinessServer
+// BusinessServer is the server API for Business service.
+// All implementations must embed UnimplementedBusinessServer
 // for forward compatibility.
-type BussinessServer interface {
+type BusinessServer interface {
 	CreateNewBusiness(context.Context, *CreateBusinessRequest) (*CreateBusinessResponse, error)
-	mustEmbedUnimplementedBussinessServer()
+	mustEmbedUnimplementedBusinessServer()
 }
 
-// UnimplementedBussinessServer must be embedded to have
+// UnimplementedBusinessServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedBussinessServer struct{}
+type UnimplementedBusinessServer struct{}
 
-func (UnimplementedBussinessServer) CreateNewBusiness(context.Context, *CreateBusinessRequest) (*CreateBusinessResponse, error) {
+func (UnimplementedBusinessServer) CreateNewBusiness(context.Context, *CreateBusinessRequest) (*CreateBusinessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNewBusiness not implemented")
 }
-func (UnimplementedBussinessServer) mustEmbedUnimplementedBussinessServer() {}
-func (UnimplementedBussinessServer) testEmbeddedByValue()                   {}
+func (UnimplementedBusinessServer) mustEmbedUnimplementedBusinessServer() {}
+func (UnimplementedBusinessServer) testEmbeddedByValue()                  {}
 
-// UnsafeBussinessServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to BussinessServer will
+// UnsafeBusinessServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BusinessServer will
 // result in compilation errors.
-type UnsafeBussinessServer interface {
-	mustEmbedUnimplementedBussinessServer()
+type UnsafeBusinessServer interface {
+	mustEmbedUnimplementedBusinessServer()
 }
 
-func RegisterBussinessServer(s grpc.ServiceRegistrar, srv BussinessServer) {
-	// If the following call pancis, it indicates UnimplementedBussinessServer was
+func RegisterBusinessServer(s grpc.ServiceRegistrar, srv BusinessServer) {
+	// If the following call pancis, it indicates UnimplementedBusinessServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&Bussiness_ServiceDesc, srv)
+	s.RegisterService(&Business_ServiceDesc, srv)
 }
 
-func _Bussiness_CreateNewBusiness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Business_CreateNewBusiness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateBusinessRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BussinessServer).CreateNewBusiness(ctx, in)
+		return srv.(BusinessServer).CreateNewBusiness(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Bussiness_CreateNewBusiness_FullMethodName,
+		FullMethod: Business_CreateNewBusiness_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BussinessServer).CreateNewBusiness(ctx, req.(*CreateBusinessRequest))
+		return srv.(BusinessServer).CreateNewBusiness(ctx, req.(*CreateBusinessRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Bussiness_ServiceDesc is the grpc.ServiceDesc for Bussiness service.
+// Business_ServiceDesc is the grpc.ServiceDesc for Business service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Bussiness_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "business.v1.Bussiness",
-	HandlerType: (*BussinessServer)(nil),
+var Business_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "business.v1.Business",
+	HandlerType: (*BusinessServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateNewBusiness",
-			Handler:    _Bussiness_CreateNewBusiness_Handler,
+			Handler:    _Business_CreateNewBusiness_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

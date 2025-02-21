@@ -8,13 +8,13 @@ package business.v1;
 message CreateBusinessRequest {
     string name = 1;
     string address = 2;
-    uint64 owner = 3;
+    string businessManager = 3;
 }
 
 message CreateBusinessResponse {
     uint64 id = 1;
 }
 
-service Bussiness {
+service Business {
     rpc CreateNewBusiness(CreateBusinessRequest) returns (CreateBusinessResponse) {}
 }
