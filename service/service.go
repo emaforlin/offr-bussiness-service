@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/emaforlin/bussiness-service/entities"
 	"github.com/emaforlin/bussiness-service/repository"
@@ -12,11 +13,23 @@ import (
 
 type Service interface {
 	CreateBusiness(ctx context.Context, data entities.CreateBusinessDto) (*entities.Business, error)
+	DeleteBusiness(ctx context.Context, deleteID uint) (*uint, error)
 }
 
 type service struct {
 	logger *zap.Logger
 	db     repository.GMDatabase
+}
+
+// DeleteBusiness implements Service.
+func (s *service) DeleteBusiness(ctx context.Context, deleteID uint) (*uint, error) {
+	err := s.db.Cursor().Delete(&entities.Business{}, deleteID).Error
+
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("business with id %d not found", deleteID))
+	}
+	s.logger.Debug("Business deleted")
+	return &deleteID, nil
 }
 
 func (s *service) CreateBusiness(ctx context.Context, business entities.CreateBusinessDto) (*entities.Business, error) {

@@ -15,6 +15,32 @@ import (
 type gRPCServer struct {
 	pb.UnimplementedBusinessServer
 	createBusiness gt.Handler
+	deleteBusiness gt.Handler
+}
+
+func (s *gRPCServer) DeleteBusiness(ctx context.Context, req *pb.DeleteBusinessRequest) (*pb.DeleteBusinessResponse, error) {
+	_, resp, err := s.deleteBusiness.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*pb.DeleteBusinessResponse), nil
+}
+
+func decodeDeleteBusinessReq(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.DeleteBusinessRequest)
+	return req.GetId(), nil
+}
+
+func encodeDeleteBusinessReq(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(*uint)
+	id := uint64(*res)
+
+	if res == nil {
+		return nil, status.Error(codes.InvalidArgument, "could not delete business")
+	}
+	return &pb.DeleteBusinessResponse{
+		Id: &id,
+	}, nil
 }
 
 func (s *gRPCServer) CreateNewBusiness(ctx context.Context, req *pb.CreateBusinessRequest) (*pb.CreateBusinessResponse, error) {
@@ -55,6 +81,11 @@ func NewGRPCServer(endpoints endpoints.Endpoints, logger *zap.Logger) pb.Busines
 			endpoints.CreateBusiness,
 			decodeCreateBusinessReq,
 			encodeCreateBusinessResp,
+		),
+		deleteBusiness: gt.NewServer(
+			endpoints.DeleteBusiness,
+			decodeDeleteBusinessReq,
+			encodeDeleteBusinessReq,
 		),
 	}
 }
