@@ -10,11 +10,25 @@ import (
 
 type Endpoints struct {
 	CreateBusiness gkendpoint.Endpoint
+	DeleteBusiness gkendpoint.Endpoint
 }
 
 func MakeEndpoints(s service.Service) Endpoints {
 	return Endpoints{
 		CreateBusiness: makeCreateBusinessEndpoint(s),
+		DeleteBusiness: makeDeleteBusinessEndpoint(s),
+	}
+}
+
+func makeDeleteBusinessEndpoint(s service.Service) gkendpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		id := request.(uint64)
+		res, err := s.DeleteBusiness(ctx, uint(id))
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+
 	}
 }
 

@@ -15,6 +15,15 @@ message CreateBusinessResponse {
     uint64 id = 1;
 }
 
+message DeleteBusinessRequest {
+    uint64 id = 1;
+}
+
+message DeleteBusinessResponse {
+    optional uint64 id = 1;
+}
+
 service Business {
     rpc CreateNewBusiness(CreateBusinessRequest) returns (CreateBusinessResponse) {}
+    rpc DeleteBusiness(DeleteBusinessRequest) returns (DeleteBusinessResponse) {}
 }
