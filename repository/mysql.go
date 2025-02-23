@@ -49,7 +49,7 @@ func (m *MysqlDB) Connect() error {
 
 	// Add your model to perform database migration
 	if *config.GetConfig().DB.Migrate {
-		db.AutoMigrate(entities.Business{}, entities.Staff{})
+		db.AutoMigrate(entities.Business{}, entities.Staff{}, entities.Invitation{})
 	}
 
 	return nil
