@@ -14,8 +14,37 @@ import (
 
 type gRPCServer struct {
 	pb.UnimplementedBusinessServer
-	createBusiness gt.Handler
-	deleteBusiness gt.Handler
+	createBusiness     gt.Handler
+	deleteBusiness     gt.Handler
+	sendJoinInvitation gt.Handler
+}
+
+func (s *gRPCServer) SendJoinInvitation(ctx context.Context, req *pb.InvitationRequest) (*pb.InvitationResponse, error) {
+	_, resp, err := s.sendJoinInvitation.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*pb.InvitationResponse), nil
+}
+
+func decodeInvitationReq(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.InvitationRequest)
+	return entities.InvitationDto{
+		InviterID:      req.GetInviterID(),
+		RecipientEmail: req.GetRecipientEmail(),
+		AssignedRole:   req.GetAssignedRole(),
+	}, nil
+}
+
+func encodeInvitationResp(_ context.Context, response interface{}) (interface{}, error) {
+	res := response.(string)
+	if res == "" {
+		return nil, status.Error(codes.InvalidArgument, "failed to send invitation")
+	}
+
+	return &pb.InvitationResponse{
+		Token: res,
+	}, nil
 }
 
 func (s *gRPCServer) DeleteBusiness(ctx context.Context, req *pb.DeleteBusinessRequest) (*pb.DeleteBusinessResponse, error) {
@@ -31,7 +60,7 @@ func decodeDeleteBusinessReq(_ context.Context, request interface{}) (interface{
 	return req.GetId(), nil
 }
 
-func encodeDeleteBusinessReq(_ context.Context, response interface{}) (interface{}, error) {
+func encodeDeleteBusinessResp(_ context.Context, response interface{}) (interface{}, error) {
 	res := response.(*uint)
 	id := uint64(*res)
 
@@ -85,7 +114,12 @@ func NewGRPCServer(endpoints endpoints.Endpoints, logger *zap.Logger) pb.Busines
 		deleteBusiness: gt.NewServer(
 			endpoints.DeleteBusiness,
 			decodeDeleteBusinessReq,
-			encodeDeleteBusinessReq,
+			encodeDeleteBusinessResp,
+		),
+		sendJoinInvitation: gt.NewServer(
+			endpoints.SendJoinInvitation,
+			decodeInvitationReq,
+			encodeInvitationResp,
 		),
 	}
 }
