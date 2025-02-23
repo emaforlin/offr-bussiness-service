@@ -13,7 +13,8 @@ type Config struct {
 }
 
 type App struct {
-	Port uint16
+	Port   uint16
+	Secret []byte
 }
 
 type DB struct {
@@ -39,7 +40,8 @@ func Init() {
 
 	config = &Config{
 		App: App{
-			viper.GetUint16("service.port"),
+			Port:   viper.GetUint16("service.port"),
+			Secret: []byte(viper.GetString("service.secret")),
 		},
 		DB: DB{
 			DBName:   viper.GetString("database.dbname"),
