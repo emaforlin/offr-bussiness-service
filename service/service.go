@@ -11,6 +11,7 @@ import (
 type Service interface {
 	CreateBusiness(ctx context.Context, data entities.CreateBusinessDto) (*entities.Business, error)
 	DeleteBusiness(ctx context.Context, deleteID uint) (*uint, error)
+	SendJoinInvitation(ctx context.Context, invitation entities.InvitationDto) (string, error)
 }
 
 type service struct {
