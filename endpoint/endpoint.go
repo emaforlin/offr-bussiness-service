@@ -9,14 +9,27 @@ import (
 )
 
 type Endpoints struct {
-	CreateBusiness gkendpoint.Endpoint
-	DeleteBusiness gkendpoint.Endpoint
+	CreateBusiness     gkendpoint.Endpoint
+	DeleteBusiness     gkendpoint.Endpoint
+	SendJoinInvitation gkendpoint.Endpoint
 }
 
 func MakeEndpoints(s service.Service) Endpoints {
 	return Endpoints{
-		CreateBusiness: makeCreateBusinessEndpoint(s),
-		DeleteBusiness: makeDeleteBusinessEndpoint(s),
+		CreateBusiness:     makeCreateBusinessEndpoint(s),
+		DeleteBusiness:     makeDeleteBusinessEndpoint(s),
+		SendJoinInvitation: makeSendJoinInvitationEndpoint(s),
+	}
+}
+
+func makeSendJoinInvitationEndpoint(s service.Service) gkendpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(entities.InvitationDto)
+		token, err := s.SendJoinInvitation(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+		return token, nil
 	}
 }
 
