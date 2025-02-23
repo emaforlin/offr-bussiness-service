@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Business_CreateNewBusiness_FullMethodName = "/business.v1.Business/CreateNewBusiness"
-	Business_DeleteBusiness_FullMethodName    = "/business.v1.Business/DeleteBusiness"
+	Business_CreateNewBusiness_FullMethodName  = "/business.v1.Business/CreateNewBusiness"
+	Business_DeleteBusiness_FullMethodName     = "/business.v1.Business/DeleteBusiness"
+	Business_SendJoinInvitation_FullMethodName = "/business.v1.Business/SendJoinInvitation"
 )
 
 // BusinessClient is the client API for Business service.
@@ -29,6 +30,7 @@ const (
 type BusinessClient interface {
 	CreateNewBusiness(ctx context.Context, in *CreateBusinessRequest, opts ...grpc.CallOption) (*CreateBusinessResponse, error)
 	DeleteBusiness(ctx context.Context, in *DeleteBusinessRequest, opts ...grpc.CallOption) (*DeleteBusinessResponse, error)
+	SendJoinInvitation(ctx context.Context, in *InvitationRequest, opts ...grpc.CallOption) (*InvitationResponse, error)
 }
 
 type businessClient struct {
@@ -59,12 +61,23 @@ func (c *businessClient) DeleteBusiness(ctx context.Context, in *DeleteBusinessR
 	return out, nil
 }
 
+func (c *businessClient) SendJoinInvitation(ctx context.Context, in *InvitationRequest, opts ...grpc.CallOption) (*InvitationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InvitationResponse)
+	err := c.cc.Invoke(ctx, Business_SendJoinInvitation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BusinessServer is the server API for Business service.
 // All implementations must embed UnimplementedBusinessServer
 // for forward compatibility.
 type BusinessServer interface {
 	CreateNewBusiness(context.Context, *CreateBusinessRequest) (*CreateBusinessResponse, error)
 	DeleteBusiness(context.Context, *DeleteBusinessRequest) (*DeleteBusinessResponse, error)
+	SendJoinInvitation(context.Context, *InvitationRequest) (*InvitationResponse, error)
 	mustEmbedUnimplementedBusinessServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedBusinessServer) CreateNewBusiness(context.Context, *CreateBus
 }
 func (UnimplementedBusinessServer) DeleteBusiness(context.Context, *DeleteBusinessRequest) (*DeleteBusinessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteBusiness not implemented")
+}
+func (UnimplementedBusinessServer) SendJoinInvitation(context.Context, *InvitationRequest) (*InvitationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendJoinInvitation not implemented")
 }
 func (UnimplementedBusinessServer) mustEmbedUnimplementedBusinessServer() {}
 func (UnimplementedBusinessServer) testEmbeddedByValue()                  {}
@@ -138,6 +154,24 @@ func _Business_DeleteBusiness_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Business_SendJoinInvitation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InvitationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BusinessServer).SendJoinInvitation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Business_SendJoinInvitation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BusinessServer).SendJoinInvitation(ctx, req.(*InvitationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Business_ServiceDesc is the grpc.ServiceDesc for Business service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var Business_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteBusiness",
 			Handler:    _Business_DeleteBusiness_Handler,
+		},
+		{
+			MethodName: "SendJoinInvitation",
+			Handler:    _Business_SendJoinInvitation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -23,7 +23,18 @@ message DeleteBusinessResponse {
     optional uint64 id = 1;
 }
 
+message InvitationRequest {
+    string InviterID = 1;
+    string RecipientEmail = 2;
+    string AssignedRole = 3;
+}
+
+message InvitationResponse {
+    string token = 1;
+}
+
 service Business {
     rpc CreateNewBusiness(CreateBusinessRequest) returns (CreateBusinessResponse) {}
     rpc DeleteBusiness(DeleteBusinessRequest) returns (DeleteBusinessResponse) {}
+    rpc SendJoinInvitation(InvitationRequest) returns (InvitationResponse) {}
 }
