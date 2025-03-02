@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/spf13/viper"
+	"go.uber.org/fx"
 )
 
 type Config struct {
@@ -13,7 +14,8 @@ type Config struct {
 }
 
 type App struct {
-	Port uint16
+	Port    uint16
+	DevMode bool
 }
 
 type DB struct {
@@ -40,6 +42,7 @@ func Init() {
 	config = &Config{
 		App: App{
 			viper.GetUint16("service.port"),
+			viper.GetBool("service.devmode"),
 		},
 		DB: DB{
 			DBName:   viper.GetString("database.dbname"),
@@ -55,4 +58,9 @@ func Init() {
 
 func GetConfig() *Config {
 	return config
+}
+
+func ProvideConfig() fx.Option {
+	Init()
+	return fx.Provide(GetConfig)
 }
